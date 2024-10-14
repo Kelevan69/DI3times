@@ -1,14 +1,18 @@
 package ru.netology.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 import ru.netology.model.Post;
 import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@RestController
 public class PostController {
     private final PostService service;
 
+    @Autowired
     public PostController(PostService service) {
         this.service = service;
     }
