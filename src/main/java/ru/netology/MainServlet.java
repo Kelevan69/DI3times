@@ -1,12 +1,10 @@
 package ru.netology;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.netology.controller.PostController;
 import ru.netology.repository.PostRepositoryImpl;
 import ru.netology.service.PostService;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,12 +18,7 @@ public class MainServlet extends HttpServlet {
         final var repository = new PostRepositoryImpl();
         final var service = new PostService(repository);
         controller = new PostController(service);
-    }
-
-    @Override
-    public void init(ServletConfig config) {
-        ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
-        controller = context.getBean(PostController.class);
+        final var context = new AnnotationConfigApplicationContext("ru.netology");
     }
 
     @Override
