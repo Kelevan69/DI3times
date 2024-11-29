@@ -1,8 +1,8 @@
 package ru.netology;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.netology.config.AppConfig;
 import ru.netology.controller.PostController;
-import ru.netology.repository.PostRepositoryImpl;
-import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +14,8 @@ public class MainServlet extends HttpServlet {
 
     @Override
     public void init() {
-        final var repository = new PostRepositoryImpl();
-        final var service = new PostService(repository);
-        controller = new PostController(service);
+        final var context = new AnnotationConfigApplicationContext(AppConfig.class);
+        controller = context.getBean(PostController.class);
     }
 
     @Override
@@ -24,23 +23,20 @@ public class MainServlet extends HttpServlet {
         final var path = req.getRequestURI();
         final var method = req.getMethod();
 
-        if (method.equals("GET") && path.equals("/api/posts")) {
+        if ("GET".equals(method) && "/api/posts".equals(path)) {
             controller.all(resp);
             return;
         }
-
-        if (method.equals("GET") && path.matches("/api/posts/\\d+")) {
+        if ("GET".equals(method) && path.matches("/api/posts/\\d+")) {
             final var id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
             controller.getById(id, resp);
             return;
         }
-
-        if (method.equals("POST") && path.equals("/api/posts")) {
+        if ("POST".equals(method) && "/api/posts".equals(path)) {
             controller.save(req.getReader().readLine(), resp);
             return;
         }
-
-        if (method.equals("DELETE") && path.matches("/api/posts/\\d+")) {
+        if ("DELETE".equals(method) && path.matches("/api/posts/\\d+")) {
             final var id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
             controller.removeById(id, resp);
             return;
